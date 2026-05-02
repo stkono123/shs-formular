@@ -467,9 +467,10 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
 </div>
 </div>
 
-<div class="version-line">0.30.08 · <span id="version-time"></span></div>
+<div class="version-line">0.30.09 · <span id="version-time"></span></div>
 <footer>Sanitätshaus Schwabing · Karl-Theodor-Straße 95-97 · 80796 München · Datenschutz gemäß DSGVO</footer>
 
+<div id="aufpreis-text" style="display:none;"><p><strong>Hinweis zum wirtschaftlichen Aufpreis</strong></p><p>Bei den von Ihnen gewählten Produkten handelt es sich um eine höherwertige Ausführung eines erstattungsfähigen Hilfsmittels.</p><p>Gesetzliche Krankenkassen übernehmen die Kosten grundsätzlich für eine ausreichende, zweckmäßige und wirtschaftliche Versorgung. Für das gewählte Produkt leistet Ihre Krankenkasse daher einen festen Sockelbetrag, der dem Betrag einer vergleichbaren, vollständig erstattungsfähigen Versorgung entspricht.</p><p>Für die von Ihnen gewählte höherwertige Ausführung entsteht ein darüber hinausgehender Betrag (wirtschaftlicher Aufpreis), den Sie selbst tragen.</p><p>Eine medizinisch geeignete und von der Krankenkasse vollständig übernommene Alternative steht grundsätzlich zur Verfügung. Mit Ihrer Auswahl entscheiden Sie sich bewusst für eine Versorgung mit zusätzlichen Eigenschaften oder Komfortmerkmalen, die über das Maß der Kassenleistung hinausgehen.</p><p>Bitte beachten Sie, dass eine Erstattung des wirtschaftlichen Aufpreises durch die Krankenkasse nicht erfolgt und dieser von Ihnen privat zu zahlen ist.</p></div>
 <script>
 // ===== STATE =====
 let prod = '', subProd = '', ins = '', leistung = '';
@@ -661,7 +662,7 @@ Verlust / Totalschaden: Dolito/Rehalito 50 € · DuoBravo/PeroBravo 600 €</p>
     badge: 'Pflicht',
     opt: false,
     icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
-    text: '<p><strong>Hinweis zum wirtschaftlichen Aufpreis</strong></p><p>Bei den von Ihnen gewählten Produkten handelt es sich um eine höherwertige Ausführung eines erstattungsfähigen Hilfsmittels.</p><p>Gesetzliche Krankenkassen übernehmen die Kosten grundsätzlich für eine ausreichende, zweckmäßige und wirtschaftliche Versorgung. Für das gewählte Produkt leistet Ihre Krankenkasse daher einen festen Sockelbetrag, der dem Betrag einer vergleichbaren, vollständig erstattungsfähigen Versorgung entspricht.</p><p>Für die von Ihnen gewählte höherwertige Ausführung entsteht ein darüber hinausgehender Betrag (wirtschaftlicher Aufpreis), den Sie selbst tragen.</p><p>Eine medizinisch geeignete und von der Krankenkasse vollständig übernommene Alternative steht grundsätzlich zur Verfügung. Mit Ihrer Auswahl entscheiden Sie sich bewusst für eine Versorgung mit zusätzlichen Eigenschaften oder Komfortmerkmalen, die über das Maß der Kassenleistung hinausgehen.</p><p>Bitte beachten Sie, dass eine Erstattung des wirtschaftlichen Aufpreises durch die Krankenkasse nicht erfolgt und dieser von Ihnen privat zu zahlen ist.</p>'
+    get text() { return document.getElementById('aufpreis-text').innerHTML; }
   }
 }
 
@@ -915,7 +916,7 @@ async function submitForm() {
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Wird gesendet…';
 
-  const version = '0.30.08 · ' + (document.getElementById('version-time')?.textContent||'');
+  const version = '0.30.09 · ' + (document.getElementById('version-time')?.textContent||'');
   const sigData = {};
   getDocKeys().forEach(k => { const c = document.getElementById('canvas_'+k); if(c) sigData[k]=c.toDataURL('image/png'); });
 
@@ -1006,15 +1007,4 @@ setInterval(() => {
 }, 3600000);
 </script>
 </body>
-</html,
-  aufpreis: {
-    title: 'Aufpreisvereinbarung', badge: 'Pflicht', opt: false,
-    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="8"/><polyline points="8 12 12 8 16 12"/></svg>',
-    text: '<p><strong>Hinweis zum wirtschaftlichen Aufpreis</strong></p>' +
-      '<p>Bei den von Ihnen gewählten Produkten handelt es sich um eine höherwertige Ausführung eines erstattungsfähigen Hilfsmittels.</p>' +
-      '<p>Gesetzliche Krankenkassen übernehmen die Kosten grundsätzlich für eine ausreichende, zweckmäßige und wirtschaftliche Versorgung. Für das gewählte Produkt leistet Ihre Krankenkasse daher einen festen Sockelbetrag, der dem Betrag einer vergleichbaren, vollständig erstattungsfähigen Versorgung entspricht.</p>' +
-      '<p>Für die von Ihnen gewählte höherwertige Ausführung entsteht ein darüber hinausgehender Betrag (wirtschaftlicher Aufpreis), den Sie selbst tragen.</p>' +
-      '<p>Eine medizinisch geeignete und von der Krankenkasse vollständig übernommene Alternative steht grundsätzlich zur Verfügung. Mit Ihrer Auswahl entscheiden Sie sich bewusst für eine Versorgung mit zusätzlichen Eigenschaften oder Komfortmerkmalen, die über das Maß der Kassenleistung hinausgehen.</p>' +
-      '<p>Bitte beachten Sie, dass eine Erstattung des wirtschaftlichen Aufpreises durch die Krankenkasse nicht erfolgt und dieser von Ihnen privat zu zahlen ist.</p>'
-  }
->
+</html>
