@@ -508,7 +508,7 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
 </div>
 </div>
 
-<div class="version-line">0.30.23 · <span id="version-time"></span></div>
+<div class="version-line">0.30.25 · <span id="version-time"></span></div>
 <footer>Sanitätshaus Schwabing · Karl-Theodor-Straße 95-97 · 80796 München · Datenschutz gemäß DSGVO</footer>
 
 <div id="leihe-summary" style="display:none;">
@@ -926,7 +926,10 @@ function showSummary() {
   editFields.forEach(f => {
     const el = document.getElementById(f.id);
     if (!el) return;
-    const val = f.id === 'geburtsdatum' ? formatGebDatum(el.value) : el.value;
+    let val;
+    if (f.id === 'geburtsdatum') val = formatGebDatum(el.value);
+    else if (f.format) val = f.format(el.value);
+    else val = el.value;
     if (!val && f.id === 'krankenkasse') return; // KK nur zeigen wenn befüllt
     html += `
       <div class="sum-row sum-edit-row" onclick="activateSumEdit('${f.id}','${f.type}')">
@@ -968,7 +971,7 @@ async function submitForm() {
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Wird gesendet…';
 
-  const version = '0.30.23 · ' + (document.getElementById('version-time')?.textContent||'');
+  const version = '0.30.25 · ' + (document.getElementById('version-time')?.textContent||'');
   const sigData = {};
   getDocKeys().forEach(k => { const c = document.getElementById('canvas_'+k); if(c) sigData[k]=c.toDataURL('image/png'); });
 
@@ -988,7 +991,7 @@ async function submitForm() {
     strasse: g('strasse'),
     plz: g('plz'),
     ort: g('ort'),
-    land: document.getElementById('land')?.value || 'DE',
+    country: document.getElementById('land')?.value || 'DE',
     versicherung: ins,
     leistung: leistung,
     produkt: subProd||prod,
