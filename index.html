@@ -113,7 +113,7 @@ body{ font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--tex
 .doc-badge.opt{ background:var(--teal-bg); color:var(--teal-dark); }
 .doc-arrow{ font-size:2rem; color:var(--teal); font-weight:700; transition:transform 0.3s; min-width:40px; text-align:center; }
 .doc-item.open .doc-arrow{ transform:rotate(180deg); }
-.doc-body{ display:none; padding:0 22px 22px; }
+.doc-body{ display:none; padding:0 22px 22px; } .doc-summary{ padding:0 22px 14px; border-top:1px solid var(--cream); }
 .doc-item.open .doc-body{ display:block; }
 .doc-text{ max-height:260px; overflow-y:auto; font-size:0.95rem; line-height:1.7; color:var(--text); padding:16px; background:var(--cream); border-radius:10px; margin-bottom:16px; border:1px solid var(--warm); } .doc-text ul, .doc-text ol { padding-left: 1.4em; margin: 8px 0; } .doc-text li { margin-bottom: 4px; }
 
@@ -406,7 +406,7 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
       <div class="fg full"><label>Straße &amp; Hausnummer *</label><input type="text" id="strasse" placeholder="Musterstraße 1" autocomplete="off"></div>
       <div class="fg"><label>PLZ *</label><input type="text" id="plz" placeholder="80796" inputmode="numeric" maxlength="5" oninput="lookupPlz(this.value)"></div>
       <div class="fg"><label>Ort *</label><input type="text" id="ort" placeholder="München" autocomplete="off" value="München"></div>
-      <div class="fg"><label>Geburtsdatum</label><input type="date" id="geburtsdatum" value="1980-05-01"></div>
+      <div class="fg"><label>Geburtsdatum</label><input type="text" id="geburtsdatum" placeholder="01.05.1980" value="01.05.1980" inputmode="numeric"></div>
       <div class="fg"><label>Telefon *</label><input type="tel" id="telefon" placeholder="089 1234567" inputmode="tel"></div>
     </div>
   </div>
@@ -467,9 +467,23 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
 </div>
 </div>
 
-<div class="version-line">0.30.09 · <span id="version-time"></span></div>
+<div class="version-line">0.30.12 · <span id="version-time"></span></div>
 <footer>Sanitätshaus Schwabing · Karl-Theodor-Straße 95-97 · 80796 München · Datenschutz gemäß DSGVO</footer>
 
+<div id="leihe-summary" style="display:none;">
+  <div style="padding:10px 0 4px;">
+    <p style="font-size:0.82rem;color:#5a6272;font-weight:600;margin-bottom:6px;">Wichtige Hinweise zur Gerätemiete (Kurzfassung):</p>
+    <ul style="font-size:0.85rem;color:#5a6272;padding-left:1.2em;margin:0;">
+      <li>Mietdauer richtet sich nach Ihrer Krankenkasse (ca. 3 Monate)</li>
+      <li>Gerät muss spätestens zum Ende der Mietdauer zurückgegeben werden</li>
+      <li>Verlängerung nur mit rechtzeitig eingereichtem Folgerezept</li>
+      <li>Rückgabe auf eigene Kosten per versichertem Versand oder persönlich</li>
+      <li>Gerät vollständig, gereinigt und mit Zubehör zurückgeben</li>
+      <li><strong>Sie tragen das Risiko für Verlust oder Beschädigung beim Rückversand</strong></li>
+      <li>Bei verspäteter Rückgabe können Kosten entstehen</li>
+    </ul>
+  </div>
+</div>
 <div id="aufpreis-text" style="display:none;"><p><strong>Hinweis zum wirtschaftlichen Aufpreis</strong></p><p>Bei den von Ihnen gewählten Produkten handelt es sich um eine höherwertige Ausführung eines erstattungsfähigen Hilfsmittels.</p><p>Gesetzliche Krankenkassen übernehmen die Kosten grundsätzlich für eine ausreichende, zweckmäßige und wirtschaftliche Versorgung. Für das gewählte Produkt leistet Ihre Krankenkasse daher einen festen Sockelbetrag, der dem Betrag einer vergleichbaren, vollständig erstattungsfähigen Versorgung entspricht.</p><p>Für die von Ihnen gewählte höherwertige Ausführung entsteht ein darüber hinausgehender Betrag (wirtschaftlicher Aufpreis), den Sie selbst tragen.</p><p>Eine medizinisch geeignete und von der Krankenkasse vollständig übernommene Alternative steht grundsätzlich zur Verfügung. Mit Ihrer Auswahl entscheiden Sie sich bewusst für eine Versorgung mit zusätzlichen Eigenschaften oder Komfortmerkmalen, die über das Maß der Kassenleistung hinausgehen.</p><p>Bitte beachten Sie, dass eine Erstattung des wirtschaftlichen Aufpreises durch die Krankenkasse nicht erfolgt und dieser von Ihnen privat zu zahlen ist.</p></div>
 <script>
 // ===== STATE =====
@@ -523,10 +537,10 @@ function pickInsurance(type, el) {
   const klGroup = document.getElementById('kauf-leih-group');
 
   if (type==='selbstzahler') {
-    // Beckenbodentrainer Elvie/Perifit/Emy: kein Leih
     const isBeckenNoLeih = prod==='becken' && ['elvie','perifit','emy'].includes(subProd);
-    if (isBeckenNoLeih) {
-      // Direkt weiter ohne Kauf/Leih-Auswahl
+    const isAnderes = prod==='anderes';
+    // Kein Kauf/Leih nötig: Becken ohne Leih oder "Etwas anderes"
+    if (isBeckenNoLeih || isAnderes) {
       klGroup.style.display = 'none';
       leistung = 'kauf';
       document.getElementById('kk-section').style.display = 'none';
@@ -619,19 +633,6 @@ const docDefs = {
     text: `<p><strong>MIETVEREINBARUNG FÜR MEDIZINISCHE LEIHGERÄTE</strong><br>
 zwischen Sanitätshaus Schwabing, Karl-Theodor-Straße 95-97, 80796 München (Vermieter) und Ihnen als Mieter:in.</p>
 <p>Mit der Übernahme des Mietobjekts erkennt der/die Mieter:in die folgenden Vertragsbedingungen an.</p>
-<h3>Wichtige Hinweise zur Gerätemiete (Kurzfassung)</h3>
-<ul>
-<li>Die Mietdauer richtet sich nach Ihrer Krankenkasse und beträgt in der Regel ca. 3 Monate.</li>
-<li>Das Gerät muss spätestens zum Ende der Mietdauer bei uns eingegangen sein.</li>
-<li>Alternativ kann die Mietdauer nur durch ein rechtzeitig eingereichtes Folgerezept verlängert werden.</li>
-<li>Die Rückgabe erfolgt auf eigene Kosten per versichertem Versand oder persönlich im Laden.</li>
-<li>Das Gerät ist vollständig, gereinigt und mit Zubehör zurückzugeben (ausser Elektroden oder ggf. Sonden).</li>
-<li>Bei fehlenden Teilen oder Beschädigungen können Kosten entstehen.</li>
-<li><strong>Sie tragen das Risiko für Verlust oder Beschädigung beim Rückversand.</strong></li>
-<li><strong>Bei verspäteter Rückgabe können Kosten entstehen.</strong></li>
-<li>Bei Verlust oder Totalschaden wird der Zeitwert des Geräts berechnet.</li>
-<li>Falls Ihre Krankenkasse die Kosten nicht übernimmt, können Ihnen die Kosten in Rechnung gestellt werden.</li>
-</ul>
 <h3>§1 Vertragsgegenstand</h3>
 <p>Gegenstand dieser Mietvereinbarung ist die zeitlich befristete Überlassung eines medizinischen Geräts (nachfolgend „Mietobjekt") zur therapeutischen Anwendung im häuslichen Bereich.</p>
 <h3>§2 Geltungsbereich und Voraussetzungen</h3>
@@ -695,6 +696,9 @@ function buildDocs() {
     const div = document.createElement('div');
     div.className = 'doc-item' + (i===0?' open':'');
     div.id = 'doc_'+k;
+    const summaryHtml = (k === 'leihe')
+      ? '<div class="doc-summary">' + document.getElementById('leihe-summary').innerHTML + '</div>'
+      : '';
     div.innerHTML = `
       <div class="doc-header" onclick="toggleDoc('${k}')">
         <div class="doc-icon">${d.icon}</div>
@@ -702,6 +706,7 @@ function buildDocs() {
         <div class="doc-badge ${d.opt?'opt':''}">${d.badge}</div>
         <div class="doc-arrow">▾</div>
       </div>
+      ${summaryHtml}
       <div class="doc-body">
         <div class="doc-text">${d.text}</div>
         <div class="sign-wrap">
@@ -836,8 +841,7 @@ function validateData() {
 // ===== ÜBERSICHT =====
 function formatGebDatum(val) {
   if (!val) return '';
-  const parts = val.split('-');
-  if (parts.length === 3) return parts[2]+'.'+parts[1]+'.'+parts[0];
+  // Bereits im Format TT.MM.JJJJ
   return val;
 }
 
@@ -916,20 +920,31 @@ async function submitForm() {
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Wird gesendet…';
 
-  const version = '0.30.09 · ' + (document.getElementById('version-time')?.textContent||'');
+  const version = '0.30.12 · ' + (document.getElementById('version-time')?.textContent||'');
   const sigData = {};
   getDocKeys().forEach(k => { const c = document.getElementById('canvas_'+k); if(c) sigData[k]=c.toDataURL('image/png'); });
 
+  // E-Mail: bei Leihvertrag die bestätigte E-Mail verwenden
+  const emailEl2 = document.getElementById('email2');
+  const email2group = document.getElementById('email2group');
+  const emailFinal = (emailEl2 && email2group && email2group.style.display !== 'none' && emailEl2.value)
+    ? emailEl2.value : g('email');
+
   const data = {
-    vorname: g('vorname'), nachname: g('nachname'),
-    strasse: g('strasse'), plz: g('plz'), ort: g('ort'),
-    geburtsdatum: g('geburtsdatum'), telefon: g('telefon'),
-    email: g('email'), email2: g('email2'),
-    krankenkasse: g('krankenkasse'),
-    versicherung: ins, leistung: leistung,
+    vorname: g('vorname'),
+    nachname: g('nachname'),
+    email: emailFinal,
+    telefon: g('telefon'),
+    geburtsdatum: g('geburtsdatum'),
+    strasse: g('strasse'),
+    plz: g('plz'),
+    ort: g('ort'),
+    versicherung: ins,
+    leistung: leistung,
     produkt: subProd||prod,
-    marketing: document.getElementById('marketing').checked,
+    krankenkasse: g('krankenkasse'),
     dokumente: getDocKeys(),
+    marketing_optin: document.getElementById('marketing').checked,
     signaturen: sigData,
     version: version
   };
@@ -988,7 +1003,7 @@ function resetForm() {
   ['vorname','nachname','strasse','plz','ort','telefon','email','email2','krankenkasse'].forEach(id => {
     const el = document.getElementById(id); if(el) el.value='';
   });
-  document.getElementById('geburtsdatum').value = '1980-05-01';
+  document.getElementById('geburtsdatum').value = '01.05.1980';
   document.getElementById('marketing').checked = false;
   document.getElementById('kauf-leih-group').style.display = 'none';
   document.getElementById('email2group').style.display = 'none';
