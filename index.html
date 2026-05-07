@@ -508,7 +508,7 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
 </div>
 </div>
 
-<div class="version-line">0.30.22 · <span id="version-time"></span></div>
+<div class="version-line">0.30.23 · <span id="version-time"></span></div>
 <footer>Sanitätshaus Schwabing · Karl-Theodor-Straße 95-97 · 80796 München · Datenschutz gemäß DSGVO</footer>
 
 <div id="leihe-summary" style="display:none;">
@@ -902,7 +902,7 @@ function showSummary() {
     {label:'PLZ', id:'plz', type:'text'},
     {label:'Ort', id:'ort', type:'text'},
     {label:'Geburtsdatum', id:'geburtsdatum', type:'date'},
-    {label:'Telefon', id:'telefon', type:'tel'},
+    {label:'Telefon', id:'telefon', type:'tel', format: formatTelefon},
     {label:'E-Mail', id:'email', type:'email'},
     {label:'Krankenkasse', id:'krankenkasse', type:'text'},
   ];
@@ -968,7 +968,7 @@ async function submitForm() {
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Wird gesendet…';
 
-  const version = '0.30.22 · ' + (document.getElementById('version-time')?.textContent||'');
+  const version = '0.30.23 · ' + (document.getElementById('version-time')?.textContent||'');
   const sigData = {};
   getDocKeys().forEach(k => { const c = document.getElementById('canvas_'+k); if(c) sigData[k]=c.toDataURL('image/png'); });
 
@@ -1029,13 +1029,17 @@ async function sendCorrection() {
 // ===== PLZ LOOKUP =====
 function formatTelefon(tel) {
   if (!tel) return '';
-  // Alles außer Ziffern und + entfernen
   let t = tel.replace(/[^\d+]/g, '');
   if (!t) return '';
   // Normalisieren
   if (t.startsWith('00')) t = '+' + t.slice(2);
   else if (t.startsWith('0')) t = '+49' + t.slice(1);
-  else if (!t.startsWith('+')) t = '+49' + t;
+  else if (t.startsWith('+')) { /* bereits international */ }
+  else {
+    // Keine Vorwahl: München +49 89 annehmen
+    t = '+49 89 ' + t;
+    return t;
+  }
   // Lesbar: +49 89 12345678
   const match = t.match(/^(\+\d{1,3})(\d{2,5})(\d{3,})$/);
   if (match) return match[1] + ' ' + match[2] + ' ' + match[3];
