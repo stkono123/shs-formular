@@ -366,11 +366,11 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
   <div id="kauf-leih-group" style="display:none; margin-top:20px;">
     <div class="info-box">Als Selbstzahler können Sie das Gerät kaufen oder leihen.</div>
     <div class="ins-grid">
-      <div class="ins-card" id="kl_kauf" onclick="pickKaufLeih('standard',this)">
+      <div class="ins-card" id="kl_kauf" onclick="pickKaufLeih('kauf',this)">
         <div class="ins-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 001.95-1.57l1.65-7.43H6"/></svg></div>
         <div><div class="ins-title">Kauf</div><div class="ins-sub">Gerät geht in Ihr Eigentum über</div></div>
       </div>
-      <div class="ins-card" id="kl_leih" onclick="pickKaufLeih('leihgeraet',this)">
+      <div class="ins-card" id="kl_leih" onclick="pickKaufLeih('leih',this)">
         <div class="ins-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div>
         <div><div class="ins-title">Leihe</div><div class="ins-sub">Gerät wird ausgeliehen (Kaution €50)</div></div>
       </div>
@@ -474,7 +474,7 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
 </div>
 </div>
 
-<div class="version-line">0.30.17 · <span id="version-time"></span></div>
+<div class="version-line">0.30.18 · <span id="version-time"></span></div>
 <footer>Sanitätshaus Schwabing · Karl-Theodor-Straße 95-97 · 80796 München · Datenschutz gemäß DSGVO</footer>
 
 <div id="leihe-summary" style="display:none;">
@@ -549,7 +549,7 @@ function pickInsurance(type, el) {
     // Nur Leihgeräte bekommen Kauf/Leih-Auswahl
     if (!isLeihGeraet) {
       klGroup.style.display = 'none';
-      leistung = 'standard';
+      leistung = 'kauf';
       document.getElementById('kk-section').style.display = 'none';
       document.getElementById('email2group').style.display = 'none';
       buildDocs();
@@ -681,7 +681,7 @@ function getDocKeys() {
   // Bettwäsche Comfort/Intensiv bei gesetzlich/privat → Aufpreis
   const needsAufpreis = prod==='bett' && ['bett_comfort','bett_intensiv'].includes(subProd) && ins==='gkv';
   // Leihvertrag nötig?
-  const needsLeihe = (isTensEms || (!isBeckenNoLeih && prod==='becken')) && (ins==='gkv'||ins==='pkv'||leistung==='leihgeraet');
+  const needsLeihe = (isTensEms || (!isBeckenNoLeih && prod==='becken')) && (ins==='gkv'||ins==='pkv'||leistung==='leih');
 
   const keys = ['agb','datenschutz'];
   if (needsLeihe) keys.push('leihe');
@@ -835,7 +835,7 @@ function g(id) { const el = document.getElementById(id); return el ? el.value.tr
 function validateData() {
   const req = ['vorname','nachname','strasse','plz','ort','telefon','email'];
   const needsLeih = (ins==='gkv'||ins==='pkv') && (prod==='tens'||prod==='ems');
-  const needsKaufLeih = ins==='selbstzahler' && leistung==='leihgeraet';
+  const needsKaufLeih = ins==='selbstzahler' && leistung==='leih';
   if (needsLeih||needsKaufLeih) req.push('email2');
   if (ins==='gkv') req.push('krankenkasse');
   document.getElementById('btn4').disabled = !req.every(id => g(id));
@@ -875,7 +875,7 @@ function showSummary() {
   const staticRows = [
     {label:'Produkt', val: pL[subProd]||pL[prod]||prod},
     {label:'Versicherung', val: iL[ins]||ins},
-    {label:'Art', val: leistung==='leihgeraet'?'Leihe':leistung==='standard'?'Kauf':'–'},
+    {label:'Art', val: leistung==='leih'?'Leihe':leistung==='kauf'?'Kauf':'–'},
     {label:'Newsletter', val: document.getElementById('marketing').checked?'Ja':'Nein'},
   ];
 
@@ -926,7 +926,7 @@ async function submitForm() {
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Wird gesendet…';
 
-  const version = '0.30.17 · ' + (document.getElementById('version-time')?.textContent||'');
+  const version = '0.30.18 · ' + (document.getElementById('version-time')?.textContent||'');
   const sigData = {};
   getDocKeys().forEach(k => { const c = document.getElementById('canvas_'+k); if(c) sigData[k]=c.toDataURL('image/png'); });
 
