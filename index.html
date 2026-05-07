@@ -410,7 +410,33 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
         <select id="land">
           <option value="DE" selected>Deutschland</option>
           <option value="AT">Österreich</option>
+          <option value="CH">Schweiz</option>
+          <option disabled>──────────</option>
+          <option value="BE">Belgien</option>
+          <option value="BG">Bulgarien</option>
+          <option value="DK">Dänemark</option>
+          <option value="EE">Estland</option>
+          <option value="FI">Finnland</option>
           <option value="FR">Frankreich</option>
+          <option value="GR">Griechenland</option>
+          <option value="IE">Irland</option>
+          <option value="IT">Italien</option>
+          <option value="HR">Kroatien</option>
+          <option value="LV">Lettland</option>
+          <option value="LT">Litauen</option>
+          <option value="LU">Luxemburg</option>
+          <option value="MT">Malta</option>
+          <option value="NL">Niederlande</option>
+          <option value="PL">Polen</option>
+          <option value="PT">Portugal</option>
+          <option value="RO">Rumänien</option>
+          <option value="SE">Schweden</option>
+          <option value="SK">Slowakei</option>
+          <option value="SI">Slowenien</option>
+          <option value="ES">Spanien</option>
+          <option value="CZ">Tschechien</option>
+          <option value="HU">Ungarn</option>
+          <option value="CY">Zypern</option>
         </select>
       </div>
       <div class="fg"><label>Geburtsdatum</label><input type="text" id="geburtsdatum" placeholder="01.05.1980" value="01.05.1980" inputmode="numeric"></div>
@@ -474,7 +500,7 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
 </div>
 </div>
 
-<div class="version-line">0.30.19 · <span id="version-time"></span></div>
+<div class="version-line">0.30.21 · <span id="version-time"></span></div>
 <footer>Sanitätshaus Schwabing · Karl-Theodor-Straße 95-97 · 80796 München · Datenschutz gemäß DSGVO</footer>
 
 <div id="leihe-summary" style="display:none;">
@@ -932,7 +958,7 @@ async function submitForm() {
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Wird gesendet…';
 
-  const version = '0.30.19 · ' + (document.getElementById('version-time')?.textContent||'');
+  const version = '0.30.21 · ' + (document.getElementById('version-time')?.textContent||'');
   const sigData = {};
   getDocKeys().forEach(k => { const c = document.getElementById('canvas_'+k); if(c) sigData[k]=c.toDataURL('image/png'); });
 
@@ -946,7 +972,7 @@ async function submitForm() {
     vorname: g('vorname'),
     nachname: g('nachname'),
     email: emailFinal,
-    telefon: g('telefon'),
+    telefon: formatTelefon(g('telefon')),
     geburtsdatum: g('geburtsdatum'),
     strasse: g('strasse'),
     plz: g('plz'),
@@ -990,6 +1016,21 @@ async function sendCorrection() {
 }
 
 // ===== PLZ LOOKUP =====
+function formatTelefon(tel) {
+  if (!tel) return '';
+  // Alles außer Ziffern und + entfernen
+  let t = tel.replace(/[^\d+]/g, '');
+  // Normalisieren auf +49...
+  if (t.startsWith('00')) t = '+' + t.slice(2);
+  else if (t.startsWith('0')) t = '+49' + t.slice(1);
+  else if (!t.startsWith('+')) t = '+49' + t;
+  // Lesbar formatieren: +49 89 12345678
+  // Ländervorwahl extrahieren
+  const match = t.match(/^(\+\d{2})(\d{2,5})(\d+)$/);
+  if (match) return match[1] + ' ' + match[2] + ' ' + match[3];
+  return t;
+}
+
 async function lookupPlz(plz) {
   if (plz.length !== 5) return;
   const ortEl = document.getElementById('ort');
