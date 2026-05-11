@@ -545,7 +545,7 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
 </div>
 </div>
 
-<div class="version-line">0.30.29-demo · <span id="version-time"></span></div>
+<div class="version-line">0.30.30 · <span id="version-time"></span></div>
 <footer>Sanitätshaus Schwabing · Karl-Theodor-Straße 95-97 · 80796 München · Datenschutz gemäß DSGVO</footer>
 
 <div id="leihe-summary" style="display:none;">
@@ -649,14 +649,24 @@ function setZuzahlung(val, auto) {
   document.getElementById('zuzahlung-warning').style.display = showWarn ? 'block' : 'none';
 }
 
-function getZuzahlungPid() {
+const ZUZAHLUNG_MAP = {
+  '8015763505417': '57048313954569', // €0 Befreit
+  '7430788677795': '57048313495817', // €5
+  '7430787989667': '57048311988489', // €10
+};
+
+function getZuzahlungIds() {
   if (ins !== 'gkv') return null;
-  if (zuzahlungsbefreit === 'ja') return '8015763505417';
-  const sp = subProd || prod;
-  if (['dolito','rehalito'].includes(sp)) return '7430788677795';
-  if (['perobravo','duobravo_n','duobravo_u','elvie','perifit','emy'].includes(sp)) return '7430787989667';
-  if (prod === 'bett') return versorgungsart === 'partner' ? '7430787989667' : '7430788677795';
-  return null;
+  let pid;
+  if (zuzahlungsbefreit === 'ja') { pid = '8015763505417'; }
+  else {
+    const sp = subProd || prod;
+    if (['dolito','rehalito'].includes(sp)) pid = '7430788677795';
+    else if (['perobravo','duobravo_n','duobravo_u','elvie','perifit','emy'].includes(sp)) pid = '7430787989667';
+    else if (prod === 'bett') pid = versorgungsart === 'partner' ? '7430787989667' : '7430788677795';
+    else return null;
+  }
+  return { pid, vid: ZUZAHLUNG_MAP[pid] };
 }
 
 // ===== NAVIGATION =====
@@ -1128,7 +1138,7 @@ async function submitForm() {
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Wird gesendet…';
 
-  const version = '0.30.28 · ' + (document.getElementById('version-time')?.textContent||'');
+  const version = '0.30.30 · ' + (document.getElementById('version-time')?.textContent||'');
   const sigData = {};
   getDocKeys().forEach(k => { const c = document.getElementById('canvas_'+k); if(c) sigData[k]=c.toDataURL('image/png'); });
 
@@ -1155,13 +1165,24 @@ async function submitForm() {
     versorgungsart: versorgungsart || null,
     shopify_product_id: (getShopifyIds()||{}).pid || null,
     shopify_variant_id: (getShopifyIds()||{}).vid || null,
-    zuzahlung_product_id: getZuzahlungPid(),
+    zuzahlung_product_id: (getZuzahlungIds()||{}).pid || null,
+    zuzahlung_variant_id: (getZuzahlungIds()||{}).vid || null,
     krankenkasse: g('krankenkasse'),
     dokumente: getDocKeys(),
     marketing_optin: document.getElementById('marketing').checked,
     signaturen: sigData,
     version: version
   };
+
+  // Timeout nach 8 Sekunden - egal was passiert, weiter zum Danke-Screen
+  const timeout = new Promise(resolve => setTimeout(resolve, 8000));
+  const webhookCall = fetch(WEBHOOK, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data)
+  }).catch(e => console.error('Webhook Fehler:', e));
+
+  await Promise.race([webhookCall, timeout]);
 
   goScreen('screen6'); setStep(5);
 }
