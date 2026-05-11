@@ -68,6 +68,8 @@ body{ font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--tex
 .ins-title{ font-size:1.2rem; font-weight:600; color:var(--navy); }
 .ins-sub{ font-size:0.92rem; color:var(--muted); margin-top:3px; }
 .info-box{ background:var(--teal-bg); border-left:4px solid var(--teal); border-radius:0 10px 10px 0; padding:14px 18px; margin:16px 0; font-size:0.95rem; color:var(--navy); }
+.toggle-btn{ padding:10px 28px; border-radius:10px; border:2px solid var(--warm); background:white; color:var(--text); font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.2s; }
+.toggle-btn.active{ border-color:var(--teal); background:var(--teal); color:white; }
 
 /* DETAIL GERÄTE */
 .device-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
@@ -145,7 +147,7 @@ input:focus,select:focus,textarea:focus{ border-color:var(--teal); }
 .sum-row{ display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--cream); gap:12px; align-items:center; } .sum-edit-row{ cursor:pointer; } .sum-edit-row:hover{ background:var(--teal-bg); border-radius:8px; padding-left:8px; padding-right:8px; }
 .sum-row:last-child{ border-bottom:none; }
 .sum-label{ font-size:0.88rem; color:var(--muted); font-weight:500; min-width:130px; }
-.sum-val{ font-size:0.95rem; color:var(--navy); font-weight:600; text-align:right; }
+.sum-val{ font-size:0.95rem; color:var(--navy); font-weight:600; text-align:right; flex:1; }
 .korrektur-box{ background:#fff8f0; border:1.5px solid #f0a050; border-radius:14px; padding:20px 22px; margin-top:20px; }
 .korrektur-title{ font-size:0.9rem; font-weight:600; color:#854d00; margin-bottom:12px; }
 
@@ -351,17 +353,17 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
   <div class="screen-sub">Bitte wählen Sie die Versorgungsart.</div>
   <div style="display:flex; flex-direction:column; gap:16px; margin-bottom:24px;">
     <div class="ins-card" id="va_einzel" onclick="pickVersorgungsart('einzel',this)">
-      <div style="font-size:1.5rem;">🛏️</div>
+      <div class="ins-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 20v-6a2 2 0 012-2h16a2 2 0 012 2v6"/><path d="M2 14V9a2 2 0 012-2h4v7"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div>
       <div>
-        <div style="font-weight:700; color:var(--navy);">Einzelversorgung</div>
-        <div style="font-size:0.88rem; color:var(--muted);">Versorgung für eine Person</div>
+        <div class="ins-title">Einzelversorgung</div>
+        <div class="ins-sub">Versorgung für eine Person</div>
       </div>
     </div>
     <div class="ins-card" id="va_partner" onclick="pickVersorgungsart('partner',this)">
-      <div style="font-size:1.5rem;">👫</div>
+      <div class="ins-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
       <div>
-        <div style="font-weight:700; color:var(--navy);">Partner-/Geschwisterversorgung</div>
-        <div style="font-size:0.88rem; color:var(--muted);">Versorgung für zwei Personen</div>
+        <div class="ins-title">Partner-/Geschwisterversorgung</div>
+        <div class="ins-sub">Versorgung für zwei Personen</div>
         <div style="font-size:0.82rem; color:var(--error); margin-top:4px;">⚠️ Muss auf dem Rezept stehen</div>
       </div>
     </div>
@@ -430,7 +432,7 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
       <div class="fg full"><label>Anrede</label>
         <select id="anrede">
           <option value="">Bitte wählen</option>
-          <option value="Herr">Herr</option>
+          <option value="Herr" selected>Herr</option>
           <option value="Frau">Frau</option>
           <option value="Divers">Divers</option>
         </select>
@@ -490,6 +492,16 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
       <div class="fg full"><label>Name der Krankenkasse *</label><input type="text" id="krankenkasse" placeholder="z. B. AOK Bayern" autocomplete="off"></div>
     </div>
   </div>
+  <div class="form-section" id="zuzahlung-section" style="display:none;">
+    <h3>Zuzahlungsbefreit</h3>
+    <div style="display:flex; gap:12px; margin-bottom:8px;">
+      <button type="button" id="zuz_nein" class="toggle-btn active" onclick="setZuzahlung('nein')">Nein</button>
+      <button type="button" id="zuz_ja" class="toggle-btn" onclick="setZuzahlung('ja')">Ja</button>
+    </div>
+    <div id="zuzahlung-warning" style="display:none; font-size:0.88rem; color:var(--error); margin-top:8px; background:rgba(220,53,69,0.07); border-radius:8px; padding:10px 14px;">
+      ⚠️ Bitte Befreiungsausweis vorlegen oder Nachweis einreichen.
+    </div>
+  </div>
   <div class="form-section">
     <h3>Newsletter</h3>
     <label class="check-group" for="marketing">
@@ -526,7 +538,6 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
   <div class="screen-title" style="margin-bottom:8px;">Vielen Dank!</div>
   <p style="color:var(--muted); margin-bottom:36px; font-size:1.05rem;">Ihre Daten wurden erfolgreich aufgenommen.</p>
   <div class="kasse-banner">
-    <div class="kasse-icon">🏪</div>
     <div class="kasse-title">Bitte gehen Sie zur Kasse</div>
     <div class="kasse-sub">Unser Team hilft Ihnen weiter – vielen Dank!</div>
   </div>
@@ -534,7 +545,7 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
 </div>
 </div>
 
-<div class="version-line">0.30.26 · <span id="version-time"></span></div>
+<div class="version-line">0.30.28 · <span id="version-time"></span></div>
 <footer>Sanitätshaus Schwabing · Karl-Theodor-Straße 95-97 · 80796 München · Datenschutz gemäß DSGVO</footer>
 
 <div id="leihe-summary" style="display:none;">
@@ -555,6 +566,7 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
 <script>
 // ===== STATE =====
 let prod = '', subProd = '', ins = '', leistung = '', versorgungsart = '';
+let zuzahlungsbefreit = 'nein', zuzahlungAutoSet = false;
 const WEBHOOK = 'https://sanitaetshaus-schwabing.app.n8n.cloud/webhook/shs-formular';
 const WEBHOOK_KORR = 'https://sanitaetshaus-schwabing.app.n8n.cloud/webhook/shs-korrektur';
 
@@ -593,7 +605,7 @@ const SHOPIFY_MAP = {
   'bett_comfort_einzel_gkv_kauf':           { pid: '8012738625801', vid: '43683738616073' },
   'bett_comfort_einzel_pkv_kauf':           { pid: '8012777390345', vid: '43683921133833' },
   'bett_comfort_einzel_selbstzahler_kauf':  { pid: '8012777390345', vid: '43683921133833' },
-  'bett_comfort_partner_gkv_kauf':          { pid: '8012738625801', vid: '43683738616073' },
+  'bett_comfort_partner_gkv_kauf':          { pid: '8012738625801', vid: '43683738648841' },
   'bett_comfort_partner_pkv_kauf':          { pid: '8012777390345', vid: '43683921166601' },
   'bett_comfort_partner_selbstzahler_kauf': { pid: '8012777390345', vid: '43683921166601' },
   'bett_intensiv_einzel_gkv_kauf':          { pid: '8012775522569', vid: '43683916972297' },
@@ -614,6 +626,37 @@ function getShopifyIds() {
   const leistungKey = leistung || 'kauf';
   const key = subProd + '_' + ins + '_' + leistungKey;
   return SHOPIFY_MAP[key] || null;
+}
+
+function checkAgeZuzahlung() {
+  const val = (document.getElementById('geburtsdatum')||{}).value || '';
+  const m = val.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+  if (!m) return;
+  const born = new Date(+m[3], +m[2]-1, +m[1]);
+  const today = new Date();
+  let age = today.getFullYear() - born.getFullYear();
+  if (today < new Date(today.getFullYear(), born.getMonth(), born.getDate())) age--;
+  if (age < 18) { setZuzahlung('ja', true); }
+}
+
+function setZuzahlung(val, auto) {
+  zuzahlungsbefreit = val;
+  zuzahlungAutoSet = !!auto;
+  document.getElementById('zuz_ja').classList.toggle('active', val==='ja');
+  document.getElementById('zuz_nein').classList.toggle('active', val==='nein');
+  // Warning nur anzeigen wenn manuell auf Ja gesetzt (nicht bei automatisch <18)
+  const showWarn = val==='ja' && !zuzahlungAutoSet;
+  document.getElementById('zuzahlung-warning').style.display = showWarn ? 'block' : 'none';
+}
+
+function getZuzahlungPid() {
+  if (ins !== 'gkv') return null;
+  if (zuzahlungsbefreit === 'ja') return '8015763505417';
+  const sp = subProd || prod;
+  if (['dolito','rehalito'].includes(sp)) return '7430788677795';
+  if (['perobravo','duobravo_n','duobravo_u','elvie','perifit','emy'].includes(sp)) return '7430787989667';
+  if (prod === 'bett') return versorgungsart === 'partner' ? '7430787989667' : '7430788677795';
+  return null;
 }
 
 // ===== NAVIGATION =====
@@ -684,6 +727,7 @@ function pickInsurance(type, el) {
       klGroup.style.display = 'none';
       leistung = 'kauf';
       document.getElementById('kk-section').style.display = 'none';
+      document.getElementById('zuzahlung-section').style.display = 'none';
       document.getElementById('email2group').style.display = 'none';
       buildDocs();
       setTimeout(() => { goScreen('screen3'); setStep(3); }, 150);
@@ -692,11 +736,15 @@ function pickInsurance(type, el) {
     klGroup.style.display = 'block';
     leistung = '';
     document.getElementById('kk-section').style.display = 'none';
+    document.getElementById('zuzahlung-section').style.display = 'none';
     document.getElementById('email2group').style.display = 'none';
   } else {
     klGroup.style.display = 'none';
     leistung = isTensEms ? 'leih' : 'kauf';
-    document.getElementById('kk-section').style.display = ins==='gkv' ? 'block' : 'none';
+    const isGkv = ins === 'gkv';
+    document.getElementById('kk-section').style.display = isGkv ? 'block' : 'none';
+    document.getElementById('zuzahlung-section').style.display = isGkv ? 'block' : 'none';
+    if (isGkv) { checkAgeZuzahlung(); } else { zuzahlungsbefreit = 'nein'; zuzahlungAutoSet = false; }
     document.getElementById('email2group').style.display = isTensEms ? 'block' : 'none';
     buildDocs();
     setTimeout(() => { goScreen('screen3'); setStep(3); }, 150);
@@ -1083,7 +1131,7 @@ async function submitForm() {
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Wird gesendet…';
 
-  const version = '0.30.26 · ' + (document.getElementById('version-time')?.textContent||'');
+  const version = '0.30.28 · ' + (document.getElementById('version-time')?.textContent||'');
   const sigData = {};
   getDocKeys().forEach(k => { const c = document.getElementById('canvas_'+k); if(c) sigData[k]=c.toDataURL('image/png'); });
 
@@ -1110,6 +1158,7 @@ async function submitForm() {
     versorgungsart: versorgungsart || null,
     shopify_product_id: (getShopifyIds()||{}).pid || null,
     shopify_variant_id: (getShopifyIds()||{}).vid || null,
+    zuzahlung_product_id: getZuzahlungPid(),
     krankenkasse: g('krankenkasse'),
     dokumente: getDocKeys(),
     marketing_optin: document.getElementById('marketing').checked,
@@ -1204,6 +1253,9 @@ function resetForm() {
   document.getElementById('kauf-leih-group').style.display = 'none';
   document.getElementById('email2group').style.display = 'none';
   document.getElementById('kk-section').style.display = 'none';
+  document.getElementById('zuzahlung-section').style.display = 'none';
+  zuzahlungsbefreit = 'nein'; zuzahlungAutoSet = false;
+  setZuzahlung('nein');
   document.querySelectorAll('.sel').forEach(el => el.classList.remove('sel'));
   goScreen('screen1'); setStep(1);
 }
