@@ -488,15 +488,17 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
   </div>
   <div class="form-section" id="kk-section" style="display:none;">
     <h3>Krankenkasse</h3>
-    <div style="display:flex; gap:20px; align-items:flex-end; flex-wrap:wrap;">
+    <div style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap;">
       <div style="flex:2; min-width:180px;">
         <div class="fg full" style="margin:0;"><label>Name der Krankenkasse *</label><input type="text" id="krankenkasse" placeholder="z. B. AOK Bayern" autocomplete="off"></div>
       </div>
-      <div id="zuzahlung-section" style="flex:1; min-width:140px; padding-bottom:2px;">
-        <label style="font-size:0.8rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; display:block; margin-bottom:8px;">Zuzahlungsbefreit</label>
-        <div style="display:flex; gap:10px;">
-          <button type="button" id="zuz_nein" class="toggle-btn active" onclick="setZuzahlung('nein')">Nein</button>
-          <button type="button" id="zuz_ja" class="toggle-btn" onclick="setZuzahlung('ja')">Ja</button>
+      <div id="zuzahlung-section" style="flex:1; min-width:140px;">
+        <div class="fg full" style="margin:0;">
+          <label>Zuzahlungsbefreit</label>
+          <div style="display:flex; gap:10px; margin-top:6px;">
+            <button type="button" id="zuz_nein" class="toggle-btn active" onclick="setZuzahlung('nein')">Nein</button>
+            <button type="button" id="zuz_ja" class="toggle-btn" onclick="setZuzahlung('ja')">Ja</button>
+          </div>
         </div>
       </div>
     </div>
@@ -547,7 +549,7 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
 </div>
 </div>
 
-<div class="version-line">0.30.32 · <span id="version-time"></span></div>
+<div class="version-line">0.30.33 · <span id="version-time"></span></div>
 <footer>Sanitätshaus Schwabing · Karl-Theodor-Straße 95-97 · 80796 München · Datenschutz gemäß DSGVO</footer>
 
 <div id="leihe-summary" style="display:none;">
@@ -1139,7 +1141,7 @@ async function submitForm() {
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Wird gesendet…';
 
-  const version = '0.30.32 · ' + (document.getElementById('version-time')?.textContent||'');
+  const version = '0.30.33 · ' + (document.getElementById('version-time')?.textContent||'');
   const sigData = {};
   getDocKeys().forEach(k => { const c = document.getElementById('canvas_'+k); if(c) sigData[k]=c.toDataURL('image/png'); });
 
