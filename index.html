@@ -423,7 +423,7 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
 <!-- ===== SCREEN 4: KUNDENDATEN ===== -->
 <div class="screen" id="screen4">
 <div class="container">
-  <button class="btn-back" onclick="goScreen('screen3');setStep(3);">← Zurück</button>
+  <button class="btn-back" onclick="goScreen('screen2');setStep(2);">← Zurück</button>
   <div class="screen-title">Ihre Daten</div>
   <div class="screen-sub">Bitte füllen Sie alle Felder aus:</div>
   <div class="form-section">
@@ -545,7 +545,7 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
 </div>
 </div>
 
-<div class="version-line">0.30.28 · <span id="version-time"></span></div>
+<div class="version-line">0.30.29-demo · <span id="version-time"></span></div>
 <footer>Sanitätshaus Schwabing · Karl-Theodor-Straße 95-97 · 80796 München · Datenschutz gemäß DSGVO</footer>
 
 <div id="leihe-summary" style="display:none;">
@@ -729,8 +729,7 @@ function pickInsurance(type, el) {
       document.getElementById('kk-section').style.display = 'none';
       document.getElementById('zuzahlung-section').style.display = 'none';
       document.getElementById('email2group').style.display = 'none';
-      buildDocs();
-      setTimeout(() => { goScreen('screen3'); setStep(3); }, 150);
+      setTimeout(() => { goScreen('screen4'); setStep(4); }, 150);
       return;
     }
     klGroup.style.display = 'block';
@@ -746,8 +745,7 @@ function pickInsurance(type, el) {
     document.getElementById('zuzahlung-section').style.display = isGkv ? 'block' : 'none';
     if (isGkv) { checkAgeZuzahlung(); } else { zuzahlungsbefreit = 'nein'; zuzahlungAutoSet = false; }
     document.getElementById('email2group').style.display = isTensEms ? 'block' : 'none';
-    buildDocs();
-    setTimeout(() => { goScreen('screen3'); setStep(3); }, 150);
+    setTimeout(() => { goScreen('screen4'); setStep(4); }, 150);
   }
 }
 
@@ -757,8 +755,7 @@ function pickKaufLeih(type, el) {
   el.classList.add('sel');
   document.getElementById('email2group').style.display = type==='leih' ? 'block' : 'none';
   document.getElementById('kk-section').style.display = 'none';
-  buildDocs();
-  setTimeout(() => { goScreen('screen3'); setStep(3); }, 150);
+  setTimeout(() => { goScreen('screen4'); setStep(4); }, 150);
 }
 
 function pickVersorgungsart(type, el) {
@@ -1165,17 +1162,6 @@ async function submitForm() {
     signaturen: sigData,
     version: version
   };
-
-  // Timeout nach 8 Sekunden - egal was passiert, weiter zum Danke-Screen
-  const timeout = new Promise(resolve => setTimeout(resolve, 8000));
-  const webhookCall = fetch(WEBHOOK, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(data)
-  }).catch(e => console.error('Webhook Fehler:', e));
-
-  // Warte auf Webhook ODER Timeout - was zuerst kommt
-  await Promise.race([webhookCall, timeout]);
 
   goScreen('screen6'); setStep(5);
 }
