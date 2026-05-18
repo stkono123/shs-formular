@@ -74,6 +74,7 @@ body{ font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--tex
 .info-box{ background:var(--teal-bg); border-left:4px solid var(--teal); border-radius:0 10px 10px 0; padding:14px 18px; margin:16px 0; font-size:0.95rem; color:var(--navy); }
 .toggle-btn{ padding:10px 28px; border-radius:10px; border:2px solid var(--warm); background:white; color:var(--text); font-size:0.95rem; font-weight:600; cursor:pointer; transition:all 0.2s; }
 .toggle-btn.active{ border-color:var(--teal); background:var(--teal); color:white; }
+.toggle-btn.active.btn-nein{ background:#7ec8b8; border-color:#7ec8b8; color:white; }
 
 /* DETAIL GERÄTE */
 .device-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
@@ -453,11 +454,11 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
           <option value="Divers" data-i18n="anrede_divers">Divers</option>
         </select>
       </div>
-      <div class="fg"><label data-i18n="lbl_vorname">Vorname *</label><input type="text" id="vorname" placeholder="Max" autocomplete="off" value="Max"></div>
-      <div class="fg"><label data-i18n="lbl_nachname">Nachname *</label><input type="text" id="nachname" placeholder="Mustermann" autocomplete="off" value="Mustermann"></div>
-      <div class="fg full"><label data-i18n="lbl_strasse">Straße &amp; Hausnummer *</label><input type="text" id="strasse" placeholder="Musterstraße 1" autocomplete="off" value="Musterstraße 1"></div>
-      <div class="fg"><label data-i18n="lbl_plz">PLZ *</label><input type="text" id="plz" placeholder="80796" inputmode="numeric" maxlength="5" oninput="lookupPlz(this.value)" value="80796"></div>
-      <div class="fg"><label data-i18n="lbl_ort">Ort *</label><input type="text" id="ort" placeholder="München" autocomplete="off" value="München"></div>
+      <div class="fg"><label data-i18n="lbl_vorname">Vorname *</label><input type="text" id="vorname" placeholder="Max" autocomplete="off" ></div>
+      <div class="fg"><label data-i18n="lbl_nachname">Nachname *</label><input type="text" id="nachname" placeholder="Mustermann" autocomplete="off" ></div>
+      <div class="fg full"><label data-i18n="lbl_strasse">Straße &amp; Hausnummer *</label><input type="text" id="strasse" placeholder="Musterstraße 1" autocomplete="off" ></div>
+      <div class="fg"><label data-i18n="lbl_plz">PLZ *</label><input type="text" id="plz" placeholder="80796" inputmode="numeric" maxlength="5" oninput="lookupPlz(this.value)" ></div>
+      <div class="fg"><label data-i18n="lbl_ort">Ort *</label><input type="text" id="ort" placeholder="München" autocomplete="off"></div>
       <div class="fg"><label data-i18n="lbl_land">Land</label>
         <select id="land">
           <option value="DE" selected>Deutschland</option>
@@ -491,14 +492,14 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
           <option value="CY">Zypern</option>
         </select>
       </div>
-      <div class="fg"><label data-i18n="lbl_geburtsdatum">Geburtsdatum</label><input type="text" id="geburtsdatum" placeholder="01.05.1980" value="01.05.1980" inputmode="numeric"></div>
-      <div class="fg"><label data-i18n="lbl_telefon">Telefon *</label><input type="tel" id="telefon" placeholder="089 1234567" inputmode="tel" value="089 1234567"></div>
+      <div class="fg"><label data-i18n="lbl_geburtsdatum">Geburtsdatum</label><input type="text" id="geburtsdatum" placeholder="01.05.1980" inputmode="numeric"></div>
+      <div class="fg"><label data-i18n="lbl_telefon">Telefon *</label><input type="tel" id="telefon" placeholder="089 1234567" inputmode="tel" ></div>
     </div>
   </div>
   <div class="form-section">
     <h3 data-i18n="form_sec_email">E-Mail-Adresse</h3>
     <div class="form-grid">
-      <div class="fg full"><label data-i18n="lbl_email">E-Mail *</label><input type="email" id="email" placeholder="max@beispiel.de" inputmode="email" autocomplete="off" value="max@beispiel.de"></div>
+      <div class="fg full"><label data-i18n="lbl_email">E-Mail *</label><input type="email" id="email" placeholder="max@beispiel.de" inputmode="email" autocomplete="off" ></div>
       <div class="fg full" id="email2group" style="display:none;"><label data-i18n="lbl_email2">E-Mail bestätigen *</label><input type="email" id="email2" placeholder="max@beispiel.de" inputmode="email" autocomplete="off"></div>
     </div>
   </div>
@@ -512,7 +513,7 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
         <div class="fg full" style="margin:0;">
           <label data-i18n="lbl_zuzahlung">Zuzahlungsbefreit?</label>
           <div style="display:flex; gap:10px; margin-top:6px;">
-            <button type="button" id="zuz_nein" class="toggle-btn active" onclick="setZuzahlung('nein')" data-i18n="btn_nein">Nein</button>
+            <button type="button" id="zuz_nein" class="toggle-btn active btn-nein" onclick="setZuzahlung('nein')" data-i18n="btn_nein">Nein</button>
             <button type="button" id="zuz_ja" class="toggle-btn" onclick="setZuzahlung('ja')" data-i18n="btn_ja">Ja</button>
           </div>
         </div>
@@ -565,7 +566,7 @@ footer{ background:var(--navy); color:rgba(255,255,255,0.5); text-align:center; 
 </div>
 </div>
 
-<div class="version-line">0.30.43 · <span id="version-time"></span></div>
+<div class="version-line">v1.00.00 · Build 18.05.2026</div>
 <footer>Sanitätshaus Schwabing · Karl-Theodor-Straße 95-97 · 80796 München · Datenschutz gemäß DSGVO</footer>
 
 <div id="leihe-summary" style="display:none;">
@@ -603,6 +604,7 @@ const STRINGS = {
     ins_kauf_title: 'Kauf', ins_kauf_sub: 'Gerät geht in Ihr Eigentum über',
     ins_leih_title: 'Leihe', ins_leih_sub: 'Gerät wird ausgeliehen (Kaution €50)',
     s3_title: 'Ihre Verträge', s3_sub: 'Bitte lesen und unterschreiben Sie die folgenden Dokumente:',
+    contract_notice: '⚠️ Wichtiger Hinweis: Diese Verträge und Dokumente sind ausschließlich auf Deutsch rechtsgültig. Die unterzeichneten deutschen Vertragsdokumente werden Ihnen per E-Mail zugesandt. Bitte lesen Sie die Dokumente sorgfältig durch.',
     s4_title: 'Ihre Daten', s4_sub: 'Bitte füllen Sie alle Felder aus:',
     s5_title: 'Alles korrekt?', s5_sub: 'Bitte prüfen und bearbeiten Sie Ihre Angaben.',
     s6_title: 'Vielen Dank!', s6_sub: 'Ihre Daten wurden erfolgreich aufgenommen.',
@@ -1941,7 +1943,8 @@ function pickInsurance(type, el) {
       document.getElementById('kk-section').style.display = 'none';
 
       document.getElementById('email2group').style.display = 'none';
-      setTimeout(() => { goScreen('screen4'); setStep(4); }, 150);
+      buildDocs();
+      setTimeout(() => { goScreen('screen3'); setStep(3); }, 150);
       return;
     }
     klGroup.style.display = 'block';
@@ -1956,7 +1959,8 @@ function pickInsurance(type, el) {
     document.getElementById('kk-section').style.display = isGkv ? 'block' : 'none';
     if (isGkv) { checkAgeZuzahlung(); } else { zuzahlungsbefreit = 'nein'; zuzahlungAutoSet = false; }
     document.getElementById('email2group').style.display = isTensEms ? 'block' : 'none';
-    setTimeout(() => { goScreen('screen4'); setStep(4); }, 150);
+    buildDocs();
+    setTimeout(() => { goScreen('screen3'); setStep(3); }, 150);
   }
 }
 
@@ -1966,7 +1970,8 @@ function pickKaufLeih(type, el) {
   el.classList.add('sel');
   document.getElementById('email2group').style.display = type==='leih' ? 'block' : 'none';
   document.getElementById('kk-section').style.display = 'none';
-  setTimeout(() => { goScreen('screen4'); setStep(4); }, 150);
+  buildDocs();
+  setTimeout(() => { goScreen('screen3'); setStep(3); }, 150);
 }
 
 function pickVersorgungsart(type, el) {
@@ -2397,7 +2402,7 @@ async function submitForm() {
     marketing_optin: document.getElementById('marketing').checked,
     sprache: currentLang || 'de',
     signaturen: sigData,
-    version: version,
+    version: 'v1.00.00 · Build 18.05.2026',
     build_date: new Date().toLocaleString('de-DE', {timeZone:'Europe/Berlin', day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'})
   };
 
@@ -2481,7 +2486,7 @@ function resetForm() {
   ['vorname','nachname','strasse','plz','ort','telefon','email','email2','krankenkasse'].forEach(id => {
     const el = document.getElementById(id); if(el) el.value='';
   });
-  document.getElementById('geburtsdatum').value = '01.05.1980';
+  document.getElementById('geburtsdatum').value = '';
   const landEl = document.getElementById('land'); if(landEl) landEl.value = 'DE';
   document.getElementById('marketing').checked = false;
   document.getElementById('kauf-leih-group').style.display = 'none';
@@ -2496,8 +2501,7 @@ function resetForm() {
 
 // ===== VERSION + AUTO-RELOAD =====
 (function() {
-  const el = document.getElementById('version-time');
-  if (el) el.textContent = new Date().toLocaleString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  // version-time: statisches Build-Datum
   // Gespeicherte Sprache wiederherstellen
   try { const saved = localStorage.getItem('shs_lang'); if (saved && STRINGS[saved]) setLang(saved); } catch(e) {}
 })();
